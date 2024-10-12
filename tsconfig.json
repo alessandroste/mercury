@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": [
+      "ESNext"
+    ],
+    "strict": true,
+    "types": [
+      "@cloudflare/workers-types"
+    ],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "ESNext",
+    "allowJs": false,
+    "moduleDetection": "auto",
+    "isolatedModules": true,
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test",
+    ".wrangler"
+  ]
+}

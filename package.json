@@ -1,0 +1,29 @@
+{
+  "name": "mercury",
+  "version": "1.0.0",
+  "author": "",
+  "license": "ISC",
+  "private": "true",
+  "description": "",
+  "scripts": {
+    "setup": "node setup.mjs setup",
+    "clean": "node setup.mjs clean"
+  },
+  "workspaces": [
+    "common/dao",
+    "api",
+    "mda",
+    "app"
+  ],
+  "dependencies": {
+    "minimist": "^1.2.8",
+    "nunjucks": "^3.2.4"
+  },
+  "devDependencies": {
+    "eslint": "^9.20.1",
+    "eslint-config-prettier": "^10.0.1",
+    "globals": "^15.15.0",
+    "typescript-eslint": "^8.24.0",
+    "wrangler": "^3.109.1"
+  }
+}

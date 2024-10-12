@@ -1,0 +1,40 @@
+{
+  "name": "app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "npm run build && wrangler pages dev ./dist --ip 127.0.0.1",
+    "deploy": "npm run build && wrangler pages deploy ./dist"
+  },
+  "dependencies": {
+    "@radix-ui/themes": "^3.2.0",
+    "@tabler/icons-react": "3.17.0",
+    "jmap-jam": "^0.8.0",
+    "next-themes": "^0.4.4",
+    "oidc-client-ts": "^3.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-oidc-context": "^3.2.0",
+    "react-router-dom": "^7.1.5",
+    "vite-plugin-svgr": "^4.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.24.0",
+    "@typescript-eslint/parser": "^8.24.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.20.1",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "typescript": "^5.7.3",
+    "vite": "^6.1.0",
+    "wrangler": "^3.109.1"
+  }
+}

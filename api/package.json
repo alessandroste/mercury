@@ -1,0 +1,23 @@
+{
+  "name": "api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev --remote --ip 127.0.0.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250214.0",
+    "typescript": "^5.7.3",
+    "wrangler": "^3.109.1"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "^0.18.4",
+    "chanfana": "^2.6.3",
+    "cloudflare": "^4.1.0",
+    "hono": "^4.7.1",
+    "jmap-jam": "^0.8.0",
+    "resend": "^4.1.2",
+    "ts-japi": "^1.11.5"
+  }
+}

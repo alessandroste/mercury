@@ -1,0 +1,15 @@
+bin/
+obj/
+
+node_modules/
+
+.wrangler/
+wrangler.toml
+wrangler.json*
+!/wrangler.toml
+!/wrangler.json*
+!/app/wrangler.toml
+!/app/wrangler.json*
+
+.dev.vars
+.env.production
