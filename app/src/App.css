@@ -1,0 +1,16 @@
+#root {
+  width: 100%;
+}
+
+.header {
+  background-color: var(--gray-a2);
+  border-bottom: 1px solid var(--gray-4);
+}
+
+.rt-DataListRoot:where(.rt-r-orientation-horizontal) :where(.rt-DataListLabel) {
+  min-width: 60px;
+}
+
+.radix-themes {
+  --cursor-button: pointer
+}

@@ -1,0 +1,11 @@
+bin/
+obj/
+
+node_modules/
+
+.wrangler/
+wrangler.toml
+!/wrangler.toml
+!/app/wrangler.toml
+
+.dev.vars
