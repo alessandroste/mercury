@@ -4,12 +4,9 @@ obj/
 node_modules/
 
 .wrangler/
-wrangler.toml
-wrangler.json*
-!/wrangler.toml
-!/wrangler.json*
-!/app/wrangler.toml
-!/app/wrangler.json*
+wrangler.jsonc
+!/wrangler.jsonc
+!/app/wrangler.jsonc
 
 .dev.vars
 .env.production
