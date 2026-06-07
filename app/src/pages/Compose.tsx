@@ -1,6 +1,6 @@
 import { Box, Button, Card, DataList, Flex, Inset, Select, TextArea, TextField } from "@radix-ui/themes";
 import { IconDeviceFloppy, IconSend, IconTrash } from "@tabler/icons-react";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useState, type ChangeEvent } from "react";
 import { useLoaderData, useNavigate, useRevalidator, useSearchParams } from "react-router-dom";
 import { JMapClientContext } from "../JMapClientContext";
 import { Email, getEmptyEmail, getEmptyEmailBodyPart } from "../model/Email";
@@ -13,27 +13,29 @@ export default function Compose() {
   const client = useContext(JMapClientContext)
   const revalidator = useRevalidator()
   const navigate = useNavigate()
-  const [draft, setDraft] = useState<Omit<Email, 'headers'>>(email ?? getEmptyEmail())
+  const [draft, setDraft] = useState<Omit<Email, 'headers'>>(() => ({
+    ...(email ?? getEmptyEmail()),
+    accountId: email?.accountId ?? (accounts.length > 0 ? accounts[0].id : '')
+  }))
 
-  useEffect(() => {
+  const [prevEmail, setPrevEmail] = useState(email)
+  if (prevEmail !== email) {
+    setPrevEmail(email)
     setDraft(p => ({
       ...p,
       ...email,
-      accountId: email?.accountId ??
-        (accounts.length > 0 ? accounts[0].id : '')
+      accountId: email?.accountId ?? (accounts.length > 0 ? accounts[0].id : '')
     }))
-  }, [email, accounts])
+  }
 
-  const readyToSend = useMemo(() => {
-    return draft.id !== ''
-  }, [draft.id])
+  const readyToSend = draft.id !== ''
 
-  const draftText = useMemo(() => {
-    const textParts = draft.textBody?.map(p => p.partId).filter(p => p !== undefined) ?? []
-    return textParts.map(p => draft.bodyValues[p].value || '').join()
-  }, [draft.bodyValues, draft.textBody])
+  const draftText = (draft.textBody ?? [])
+    .map(part => part.partId)
+    .filter((partId): partId is string => partId !== undefined)
+    .map(partId => draft.bodyValues[partId]?.value || '').join()
 
-  const updateDraft = (d: Partial<Email>) => { setDraft(p => ({ ...p, ...d })) }
+  const updateDraft = (d: Partial<Omit<Email, 'headers'>>) => { setDraft(p => ({ ...p, ...d })) }
 
   const updateDraftText = (text: string) => {
     setDraft(p => ({
@@ -91,36 +93,32 @@ export default function Compose() {
       await client?.sendEmail(email.accountId, email.id)
       navigate('/')
     }
-  }, [client, email?.accountId, email?.id, navigate])
-
-  const toolbar = useMemo(() => (
-    <Box width='100%' p='4' className='header'>
-      <Flex gap='4'>
-        <Select.Root
-          value={draft.accountId}
-          onValueChange={v => updateDraft({ accountId: v })}>
-          <Select.Trigger placeholder="Account" />
-          <Select.Content>
-            {accounts.map((a, i) => (<Select.Item key={i} value={a.id}>{a.name}</Select.Item>))}
-          </Select.Content>
-        </Select.Root>
-        <Button ml='auto' onClick={saveDraft}>
-          <IconDeviceFloppy stroke={1} size={24} />Save
-        </Button>
-        <Button disabled={!readyToSend} onClick={sendCallback}>
-          <IconSend stroke={1} size={24} />Send
-        </Button>
-        <Button onClick={deleteDraft}>
-          <IconTrash stroke={1} size={24} />Delete
-        </Button>
-      </Flex>
-    </Box>),
-    [accounts, deleteDraft, draft.accountId, readyToSend, saveDraft, sendCallback])
+  }, [client, email, navigate])
 
   return (
     <Card>
       <Inset clip='padding-box' side='top' pb='current'>
-        {toolbar}
+        <Box width='100%' p='4' className='header'>
+          <Flex gap='4'>
+            <Select.Root
+              value={draft.accountId}
+              onValueChange={v => updateDraft({ accountId: v })}>
+              <Select.Trigger placeholder="Account" />
+              <Select.Content>
+                {accounts.map((a, i) => (<Select.Item key={i} value={a.id}>{a.name}</Select.Item>))}
+              </Select.Content>
+            </Select.Root>
+            <Button ml='auto' onClick={saveDraft}>
+              <IconDeviceFloppy stroke={1} size={24} />Save
+            </Button>
+            <Button disabled={!readyToSend} onClick={sendCallback}>
+              <IconSend stroke={1} size={24} />Send
+            </Button>
+            <Button onClick={deleteDraft}>
+              <IconTrash stroke={1} size={24} />Delete
+            </Button>
+          </Flex>
+        </Box>
       </Inset>
       <DataList.Root>
         <DataList.Item>
@@ -128,8 +126,8 @@ export default function Compose() {
           <DataList.Value>
             <Box width="100%">
               <TextField.Root
-                value={draft?.to?.map(a => a.email).join(', ') ?? ''}
-                onChange={e => updateDraftTo(e.target.value)} />
+                value={(draft.to ?? []).map(address => address.email).join(', ')}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => updateDraftTo(e.target.value)} />
             </Box>
           </DataList.Value>
         </DataList.Item>
@@ -139,7 +137,7 @@ export default function Compose() {
             <Box width="100%">
               <TextField.Root
                 value={draft.subject ?? ''}
-                onChange={e => { updateDraft({ subject: e.target.value }) }} />
+                onChange={(e: ChangeEvent<HTMLInputElement>) => { updateDraft({ subject: e.target.value }) }} />
             </Box>
           </DataList.Value>
         </DataList.Item>
@@ -150,7 +148,7 @@ export default function Compose() {
               <TextArea
                 value={draftText}
                 style={{ height: "300px" }}
-                onChange={e => updateDraftText(e.target.value)} />
+                onChange={(e: ChangeEvent<HTMLTextAreaElement>) => updateDraftText(e.target.value)} />
             </Box>
           </DataList.Value>
         </DataList.Item>

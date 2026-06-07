@@ -7,6 +7,7 @@ import { Email } from "./model/Email"
 import Compose from "./pages/Compose"
 import Mailbox from "./pages/Mailbox"
 import Message from "./pages/Message"
+import Settings from "./pages/Settings"
 import JMapClient, { Accounts, PARAM_ACCOUNT, PARAM_MESSAGE } from "./services/JMapClient"
 
 export interface IComposeData {
@@ -60,6 +61,10 @@ export default function Router() {
           path: 'compose',
           element: <Compose />,
           loader: args => getComposeData(client, args)
+        },
+        {
+          path: 'settings',
+          element: <Settings />
         }
       ]
     }

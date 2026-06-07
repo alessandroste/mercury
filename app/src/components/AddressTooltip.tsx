@@ -1,5 +1,5 @@
 import { Tooltip } from "@radix-ui/themes"
-import { EmailAddress } from "jmap-jam"
+import type { EmailAddress } from "jmap-rfc-types"
 
 export const AddressTooltip = (a: EmailAddress) => {
   if (a.name) {

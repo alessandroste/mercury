@@ -29,3 +29,7 @@ Secrets in Cloudflare
 |TXT|_mailchannels|v=mc1 cfid=*fill*.workers.dev cfid=*example.domain.com*|
 
 ## TODO
+- Need to use IPv6 to authenticate with Cloudflare in WSL
+  ```
+  curl "http://[::1]:8976/oauth/callback?code=*code*"
+  ```

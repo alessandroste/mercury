@@ -1,6 +1,6 @@
 import { Box, Button, DropdownMenu, Flex, SegmentedControl, Skeleton, Table } from "@radix-ui/themes"
 import { IconDotsVertical, IconTrash } from "@tabler/icons-react"
-import { EmailAddress } from "jmap-jam"
+import type { EmailAddress } from "jmap-rfc-types"
 import { Suspense, useCallback, useContext, useMemo } from "react"
 import { Await, useLoaderData, useRevalidator, useSearchParams } from "react-router-dom"
 import { AddressTooltip } from "../components/AddressTooltip"
@@ -68,8 +68,8 @@ export default function Mailbox() {
             <TimeTooltip time={e.receivedAt} />
           </Table.RowHeaderCell>
           <Table.Cell><RouteLink to={getMessageRouteLink(e)}>{e.subject}</RouteLink></Table.Cell>
-          <Table.Cell>{getAddress(e.from?.at(0))}</Table.Cell>
-          <Table.Cell>{getAddress(e.to?.at(0))}</Table.Cell>
+          <Table.Cell>{getAddress(e.from?.[0])}</Table.Cell>
+          <Table.Cell>{getAddress(e.to?.[0])}</Table.Cell>
           <Table.Cell>
             <DropdownMenu.Root key='3'>
               <DropdownMenu.Trigger>
@@ -101,7 +101,7 @@ export default function Mailbox() {
         <Await
           resolve={loaderData.emails}>
           {emails => (
-            < Table.Root variant='surface'>
+            <Table.Root variant='surface'>
               <Table.Header>
                 <Table.Row>
                   <Table.ColumnHeaderCell>Time</Table.ColumnHeaderCell>

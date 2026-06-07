@@ -2,7 +2,7 @@ import { Avatar, Box, Button, Container, DropdownMenu, Flex, Section, Theme } fr
 import { ThemeProvider } from 'next-themes'
 
 import '@radix-ui/themes/styles.css'
-import { IconMailPlus, IconUser } from '@tabler/icons-react'
+import { IconMailPlus, IconSettings, IconUser } from '@tabler/icons-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useAuth } from 'react-oidc-context'
 import { Outlet, useNavigate } from 'react-router-dom'
@@ -22,6 +22,12 @@ function App() {
   const composeButton = useMemo(() => (
     <Button key='1' ml='auto' onClick={() => navigate('/compose')}>
       <IconMailPlus stroke={1} size={24} />
+    </Button>
+  ), [navigate])
+
+  const settingsButton = useMemo(() => (
+    <Button key='1' ml='auto' variant='ghost' onClick={() => navigate('/settings')}>
+      <IconSettings stroke={1} size={24} />
     </Button>
   ), [navigate])
 
@@ -95,7 +101,7 @@ function App() {
           <RouteLink style={{ alignSelf: 'center', alignContent: 'baseline' }} to='/'>
             Mercury
           </RouteLink>
-          {auth.isAuthenticated ? [composeButton, avatar] : loginButton}
+          {auth.isAuthenticated ? [composeButton, settingsButton, avatar] : loginButton}
         </Flex>
         {mainContent}
       </Theme>

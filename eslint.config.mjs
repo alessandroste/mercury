@@ -2,16 +2,16 @@ import pluginJs from "@eslint/js";
 import eslintConfigPrettier from "eslint-config-prettier";
 import globals from "globals";
 import tseslint from "typescript-eslint";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Linter } from "eslint";
 
-/** @type {Linter.Config[]} */
-export default [
+/** @type {import("eslint").Linter.Config[]} */
+export default tseslint.config(
   pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
   eslintConfigPrettier,
   {
-    files: ["**/*.{js,mjs,cjs,ts}"],
-    languageOptions: { globals: globals.node }
+    files: ["**/*.ts"],
+    extends: [...tseslint.configs.recommended],
+    languageOptions: {
+      globals: globals.node
+    }
   },
-];
+);

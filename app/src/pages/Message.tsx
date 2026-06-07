@@ -16,8 +16,8 @@ export default function Message() {
     </Skeleton>
 
   const bodyValue = useMemo(() =>{
-    const textBodyPartId = email.textBody?.at(0)?.partId
-    const htmlBodyPartId = email.htmlBody?.at(0)?.partId
+    const textBodyPartId = email.textBody?.[0]?.partId
+    const htmlBodyPartId = email.htmlBody?.[0]?.partId
     const textBodyValue = textBodyPartId ? email?.bodyValues[textBodyPartId].value : ''
     const htmlBodyValue = htmlBodyPartId ? email?.bodyValues[htmlBodyPartId].value : ''
     return htmlBodyValue ? htmlBodyValue : textBodyValue

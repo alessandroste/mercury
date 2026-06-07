@@ -6,7 +6,7 @@ import svgr from 'vite-plugin-svgr'
 export default defineConfig({
   plugins: [react(), svgr()],
   server: {
-    host: '127.0.0.1',
+    host: true,
     proxy: {
       '/api': {
         target: 'http://localhost:8787',

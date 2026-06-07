@@ -1,22 +1,14 @@
-import { EmailBodyPart, Email as JEmail } from 'jmap-jam'
+import type { EmailBodyPart, Email as JEmail, WithoutHeaders } from 'jmap-rfc-types'
 
-export type Email = JEmail & {
+export type Email = WithoutHeaders<JEmail> & {
   accountId: string
 }
 
 export const getEmptyEmailBodyPart = (partId: string, size: number) : EmailBodyPart => ({
   partId: partId,
   size: size,
-  blobId: null,
   headers: [],
-  name: null,
-  type: '',
-  charset: null,
-  disposition: null,
-  cid: null,
-  language: null,
-  location: null,
-  subParts: null
+  type: ''
 })
 
 export const getEmptyEmail = (): Omit<Email, 'headers'> => ({
@@ -28,17 +20,17 @@ export const getEmptyEmail = (): Omit<Email, 'headers'> => ({
   keywords: {},
   size: 0,
   receivedAt: '',
-  messageId: null,
-  inReplyTo: null,
-  sender: null,
-  from: null,
-  to: null,
-  references: null,
-  cc: null,
-  bcc: null,
-  replyTo: null,
-  subject: null,
-  sentAt: null,
+  messageId: undefined,
+  inReplyTo: undefined,
+  sender: undefined,
+  from: undefined,
+  to: undefined,
+  references: undefined,
+  cc: undefined,
+  bcc: undefined,
+  replyTo: undefined,
+  subject: undefined,
+  sentAt: undefined,
   bodyStructure: getEmptyEmailBodyPart('', 0),
   bodyValues: {},
   textBody: [],

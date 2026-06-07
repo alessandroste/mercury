@@ -1,4 +1,5 @@
-import JamClient, { UndoStatus } from "jmap-jam"
+import JamClient from "jmap-jam"
+import { UndoStatus } from "jmap-rfc-types"
 import { LoaderFunctionArgs, Params } from "react-router-dom"
 import { Email } from "../model/Email"
 
@@ -7,6 +8,19 @@ export const PARAM_ACCOUNT = 'account'
 export const PARAM_MESSAGE = 'message'
 
 export type Accounts = Array<{ id: string, name: string }>
+export type SettingsRoute = {
+  id: string
+  name: string
+  enabled?: boolean
+  matchers?: Array<{
+    field?: string
+    value?: string
+  }>
+  actions?: Array<{
+    type?: string
+    value?: string[]
+  }>
+}
 
 export default class JMapClient {
   private endpoint = `${import.meta.env.VITE_HOST_FUN}/.well-known/jmap`
@@ -43,6 +57,20 @@ export default class JMapClient {
     ]
   }
 
+  async getSettingsRoutes(): Promise<SettingsRoute[]> {
+    if (this.client === undefined) return []
+    const response = await fetch(`${this.endpoint.replace('/.well-known/jmap', '')}/settings/routes`, {
+      method: 'GET',
+      headers: {
+        Authorization: this.client.authHeader,
+      }
+    })
+    if (!response.ok) {
+      throw new Error(`Unable to load routes (${response.status})`)
+    }
+    return await response.json() as SettingsRoute[]
+  }
+
   async getEmails({ request }: LoaderFunctionArgs): Promise<Email[]> {
     if (this.client === undefined) return []
     const client = this.client
@@ -55,7 +83,7 @@ export default class JMapClient {
       return r2
     }, this)
     return (await Promise.all(emailRequests))
-      .flatMap((r) => r.list.map(e => ({ ...e, accountId: r.accountId })))
+      .flatMap((r) => r.list.map(e => ({ ...e, accountId: r.accountId }) as Email))
   }
 
   async getEmail(params: Params): Promise<Email | null> {
@@ -69,16 +97,14 @@ export default class JMapClient {
       fetchTextBodyValues: true
     })
 
-    return ({ ...response[0]?.list[0], accountId: accountId })
+    const email = response[0]?.list[0]
+    return email ? ({ ...email, accountId: accountId } as Email) : null
   }
 
   async deleteEmail(accountId: string, id: string): Promise<void> {
     await this.client?.api.Email.set({
       accountId: accountId,
       destroy: [id],
-      ifInState: null,
-      create: null,
-      update: null,
     })
   }
 
@@ -89,14 +115,13 @@ export default class JMapClient {
     const [result] = await this.client.api.Email.set({
       accountId: email.accountId,
       destroy: [],
-      ifInState: null,
-      update: null,
       create: {
         [id]: email
       }
     })
 
-    return result.created ? { accountId: email.accountId, ...result.created[id] } : undefined
+    const created = result.created?.[id]
+    return created ? ({ accountId: email.accountId, ...created } as Email) : undefined
   }
 
   async sendEmail(accountId: string, emailId: string): Promise<void> {
@@ -104,23 +129,13 @@ export default class JMapClient {
     const id = crypto.randomUUID()
     await this.client.api.EmailSubmission.set({
       accountId: accountId,
-      ifInState: null,
       create: {
         [id]: {
-          id: id,
           emailId: emailId,
-          sendAt: '',
           identityId: '',
-          threadId: '',
-          envelope: null,
-          undoStatus: "pending" as UndoStatus,
-          deliveryStatus: null,
-          dsnBlobIds: [],
-          mdnBlobIds: []
+          undoStatus: UndoStatus.Pending
         }
-      },
-      update: null,
-      destroy: null
+      }
     })
   }
 }
